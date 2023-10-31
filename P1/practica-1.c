@@ -188,7 +188,7 @@ int main(){
     printf("la edad media de los operados es: %d\n", edad_media_operados);
 
     return 0;
-    }
+}
 
 
 
