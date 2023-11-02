@@ -1,0 +1,28 @@
+/* 
+Ejercicio 5. ¿Qué hace el siguiente programa?
+*/
+
+#include <stdio.h>
+int main() {
+    int x, y;
+    printf ("Ingrese dos enteros dentro del rango [1 ,20]:\n");
+    scanf(" %d %d", &x, &y);
+    if (x >=1 && y>=1 && x<=20 && y<=20) {
+        for (int i=1; i<=y; i++) {
+            for (int j=1; j<=x; j++) {
+                printf ("@");
+            }
+            printf ("\n");
+        }
+    } else {
+        printf("Los enteros no se encuentran en el rango pedido");
+    }
+    return 0;
+}
+
+/* 
+
+Este codigo imprime cierta cantidad de arrobas seguidas (dependiendo de X) y lo repite 
+en Y cantidad de filas
+
+*/
