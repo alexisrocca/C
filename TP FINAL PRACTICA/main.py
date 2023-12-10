@@ -31,7 +31,7 @@ for frase in data:
         else:
             prev = frase[n-1]
             dict[frase[n]] = [prev,'']
-        # print(f"{frase[n]} : {dict[frase[n]]}")
+        print(f"{frase[n]} : {dict[frase[n]]}")
         
 # print(dict)
 
