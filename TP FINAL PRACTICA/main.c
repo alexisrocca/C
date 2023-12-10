@@ -35,7 +35,6 @@ int main(int argc, char *argv[])
     strcpy(command, "cd Textos/");
     strcat(command, nombre);
     strcat(command, " && ls > ../../archivos.txt");
-
     system(command);
 
     // Liberar la memoria
@@ -57,16 +56,16 @@ int main(int argc, char *argv[])
     printf("\n--------------------------------------\n");
 
     // Creo el file PATH de Salida
+    size = strlen("Salidas/") + strlen(nombre) + strlen(".txt") + 1;
+    char *outFilePath = (char *)malloc(size * sizeof(char));
+    strcpy(outFilePath, "Salidas/");
+    strcat(outFilePath, nombre);
+    strcat(outFilePath, ".txt");
+    printf("%s", outFilePath);
 
-    // size = strlen("Salida/") + strlen(nombre) + strlen("/") + strlen(nombre) + strlen(".txt") + 1;
-    // char *outFilePath = (char *)malloc(size * sizeof(char));
-    // strcpy(outFilePath, "Salida/");
-    // strcat(outFilePath, nombre);
-    // strcat(outFilePath, "/");
-    // strcat(outFilePath, nombre);
-    // strcat(outFilePath, ".txt");
-    // printf("%s", outFilePath);
-    // outFile = fopen(outFilePath, "w+");
+    outFile = fopen(outFilePath, "w+");
+
+    printf("\n--------------------------------------\n");
 
     while (fgets(buff0, MAX_LINE_LENGTH, file) != NULL)
     {
@@ -82,11 +81,6 @@ int main(int argc, char *argv[])
         strcat(childFileName, buff0);
         printf("[!] %s\n", childFileName);
         childFile = fopen(childFileName, "r");
-        if (childFile == NULL) {
-            perror("Error al abrir el archivo hijo");
-            free(childFileName);
-            continue; // Saltar al siguiente archivo si no se pudo abrir
-        }
 
         printf("--------------------------------------\n");
 
@@ -95,21 +89,18 @@ int main(int argc, char *argv[])
 
         while ((c = fgetc(childFile)) != EOF)
         {
-
             if (c == '\n' && (newline != 1))
             {
                 c = ' ';
             }
-
             newline = 0;
-
             if (c == '.')
             {
                 newline = 1;
                 c = ' ';
                 buff1[i] = '\0';
                 printf("%s", buff1);
-                // fprintf(outFile,"%s",buff1);
+                fprintf(outFile,"%s",buff1);
                 i = 0;
             }
 
@@ -119,16 +110,17 @@ int main(int argc, char *argv[])
                 buff1[i++] = c;
             }
         }
-
+        fprintf(outFile,"\n");
         printf("\n--------------------------------------\n");
         fclose(childFile);
         free(childFileName);
     }
-    // free(outFilePath);
+    
     free(path);
-
     fclose(file);
+
     fclose(outFile);
+    free(outFilePath);
 
     return 0;
 }
