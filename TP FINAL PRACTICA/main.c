@@ -49,14 +49,16 @@ char *crearPath(char *prefijo, char *nombre, char *sufijo)
     return path;
 }
 
-void procesarArchivo(char *childFilePath, char *outFilePath)
+void procesarArchivo(char *childFilePath, char *outFilePath, int opened)
 {
     FILE *childFile, *outFile;
     int i = 0, newline;
     char c, buff[MAX_LINE_LENGTH];
 
     childFile = fopen(childFilePath, "r");
-    outFile = fopen(outFilePath, "w+");
+    if (opened == 0) outFile = fopen(outFilePath, "w+");
+    else outFile = fopen(outFilePath, "a");
+    
 
     while ((c = fgetc(childFile)) != EOF)
     {
@@ -87,12 +89,16 @@ void procesarArchivo(char *childFilePath, char *outFilePath)
     fclose(outFile);
 }
 
-void procesarArchivos(char *path, FILE *filesList, char *nombre)
+void procesarArchivos(char *path, char *nombre)
 {
+    FILE *filesList;
     char buff[MAX_LINE_LENGTH], c;
     char *childFilePath, *outFilePath;
 
     outFilePath = crearPath("Entradas/", nombre, ".txt");
+
+    filesList = fopen("archivos.txt", "r");
+    int opened = 0;
 
     while (fgets(buff, MAX_LINE_LENGTH, filesList) != NULL)
     {
@@ -104,12 +110,14 @@ void procesarArchivos(char *path, FILE *filesList, char *nombre)
         childFilePath = crearPath(path, buff, "");
 
         printf("\n");
-        procesarArchivo(childFilePath, outFilePath);
+        procesarArchivo(childFilePath, outFilePath, opened);
+        opened++;
         printf("\n\n");
 
         free(childFilePath);
     }
     free(outFilePath);
+    fclose(filesList);
 }
 
 void ejecutarProgramaPython(char *nombre)
@@ -136,12 +144,9 @@ int main(int argc, char *argv[])
 
     filesListPath = crearPath("Textos/", name, "/");
 
-    filesList = fopen("archivos.txt", "r");
-
-    procesarArchivos(filesListPath, filesList, name);
+    procesarArchivos(filesListPath, name);
 
     free(filesListPath);
-    fclose(filesList);
 
     ejecutarProgramaPython(name);
 
