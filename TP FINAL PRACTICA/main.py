@@ -1,5 +1,5 @@
 import sys
-print("--------------------------------------");
+print("--------------------------------------")
 print("[PYTHON]")
 name = sys.argv[1]
 print(f"Generando autocompletado para Frases de {name}...\n")
@@ -13,42 +13,50 @@ frasesFile = open(frasesPath, "r")
 frasesFileLines = frasesFile.readlines()
 
 
-data = []
-
-for line in referenceFileLines:
-    data.append(line[:-1].split())
+splitLines = []
+for lines in referenceFileLines:
+    splitLines.append(lines[:-1].split())
 
 dict = {}
-for frase in data:
-    for n in range(0,len(frase)):
-        if (n+1 < len(frase)) and (n != 0):
-            prev = frase[n-1]
-            nex = frase[n+1]
-            dict[frase[n]] = [prev,nex]
-        elif (n == 0):
-            nex = frase[n+1]
-            dict[frase[n]] = ['',nex]
-        else:
-            prev = frase[n-1]
-            dict[frase[n]] = [prev,'']
-        print(f"{frase[n]} : {dict[frase[n]]}")
-        
-# print(dict)
+d = {}
 
-for line in frasesFileLines:
-    print(line[:-1])
-    textList = line[:-1].split()
-    for n in range(0,len(line[:-1].split())):
-        if textList[n] == '_':
+for listaPalabras in splitLines:
+
+    for nP in range(len(listaPalabras)):
+
+        if nP+1 < len(listaPalabras):
+
+            sigPalabra = listaPalabras[nP+1]
+
+            if dict.get(listaPalabras[nP]) == None:
+                d[listaPalabras[nP+1]] = 1
+                dict[listaPalabras[nP]] = d
+                d={}
+
+            elif dict[listaPalabras[nP]].get(listaPalabras[nP+1]) == None:
+                dict[listaPalabras[nP]][listaPalabras[nP+1]] = 1
+                
+            else:
+                dict[listaPalabras[nP]][listaPalabras[nP+1]] = dict[listaPalabras[nP]][listaPalabras[nP+1]] + 1
+
+splitLines = []
+for lines in frasesFileLines:
+    splitLines = lines[:-1].split()
+    for nP in range(len(splitLines)):
+        if splitLines[nP] == '_':
+            # print(lines[:-1])
+            
+            
             try:
-                # print(dict[textList[n-1]][1])
-                filled = line.replace('_',dict[textList[n-1]][1])
-                print(filled)
+                out = lines[:-1].replace("_",list(enumerate(dict[splitLines[nP-1]].keys()))[0][1])
+                # print(f"{dict[splitLines[nP-1]]}\n")
+                # print(list(enumerate(dict[splitLines[nP-1]].keys()))[0][1])
+                print(out)
             except KeyError:
-                print("unknown key")
-        
+                pass
 
 
 
 referenceFile.close()
 frasesFile.close()
+# dict.keys()
