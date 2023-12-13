@@ -1,10 +1,10 @@
-/* 
+/*
 
 Falta modularizar el codigo.
 Faltan los asserts
 Falta los comentarios
 
- */
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,10 +14,11 @@ Falta los comentarios
 
 #define MATERIAS_FILE_LIST "materias.txt"
 #define FILE_OUT "output.txt"
+
 #define MAX_CHARS_IN_LINE 50
 #define MAX_LINES 50
 
-char *convertirStrMinuscula(char *str)
+void *convertirStrMinuscula(char *str)
 {
     for (int i = 0; i < strlen(str); i++) // Recorro el string
     {
@@ -28,58 +29,72 @@ char *convertirStrMinuscula(char *str)
     }
 }
 
+char *crearLineaActual(char *currentFileLine)
+{
+    int size = strlen(currentFileLine);
+    char *currentLine = (char *)malloc(size * sizeof(char));
+    strcpy(currentLine, currentFileLine);
+    return currentLine;
+}
+
+int comprobarLineaRepetida(char fileLine[MAX_LINES][MAX_CHARS_IN_LINE], int numLines, char *currentLine)
+{
+    int len, repetido = 0;
+    convertirStrMinuscula(fileLine[numLines]);
+
+    for (int i = 0; i < numLines; i++)
+    {
+        if (strcmp(fileLine[i], fileLine[numLines]) == 0 && repetido == 0) // Comparo la linea actual con las que ya se han leido
+        {
+            len = strlen(fileLine[numLines]);
+
+            printf(
+                "\n[!] La linea '%.*s' se repite en el archivo, solo se tomara una vez.\n",
+                len - 1,
+                currentLine);
+            // Imprimo la linea que se repite sacando el \n del final del string
+            repetido = 1;
+        }
+    }
+    return repetido;
+}
+
 int main(int argc, char *argv[])
 {
     FILE *materiasFile = fopen(MATERIAS_FILE_LIST, "r"); // Abro el archivo que contiene las materias
     FILE *fileOut = fopen(FILE_OUT, "w+");               // Abro y sobreescribo el archivo output
 
-    char lineas[MAX_LINES][MAX_CHARS_IN_LINE];
-    char materia[MAX_LINES][MAX_CHARS_IN_LINE];
-    int numLines = 0, len, repetido;
-    int cantDias, diaNum, horaInicio, horaFin;
-    char *aula;
+    char fileLine[MAX_LINES][MAX_CHARS_IN_LINE];
+    int numLines = 0, repetido;
+    int diasSemana, dia, horaInicio, horaFin, horasDictado, temp, size;
+    char *aula, *currentLine;
 
     srand(time(0));
 
-    while (fgets(lineas[numLines], sizeof(lineas[numLines]), materiasFile))
+    while (fgets(fileLine[numLines], sizeof(fileLine[numLines]), materiasFile))
     {
-        strcpy(materia[numLines], lineas[numLines]);
         repetido = 0;
-        if (numLines == 0)
-            aula = lineas[0];
 
-        convertirStrMinuscula(materia[numLines]);
+        if (numLines == 0) aula = fileLine[0];
 
-        for (int i = 0; i < numLines; i++)
-        {
-            if (strcmp(materia[i], materia[numLines]) == 0 && repetido == 0) // Comparo la linea actual con las que ya se han leido
-            {
-                len = strlen(materia[numLines]);
-
-                printf(
-                    "\n[!] La linea '%.*s' se repite en el archivo, solo se tomara una vez.\n",
-                    len - 1,
-                    materia[numLines]);
-                // Imprimo la linea que se repite sacando el \n del final del string
-                repetido = 1;
-            }
-        }
+        currentLine = crearLineaActual(fileLine[numLines]);
+        repetido = comprobarLineaRepetida(fileLine, numLines, currentLine);
 
         if (numLines == 0)
-            fprintf(fileOut, "%s", lineas[numLines]);
+            fprintf(fileOut, "%s", currentLine);
 
         if (repetido == 0 && numLines != 0)
         {
-            fprintf(fileOut, "%s", lineas[numLines]);
+            fprintf(fileOut, "%s", currentLine);
 
-            cantDias = rand() % 3 + 1;
+            diasSemana = rand() % 3 + 1;
 
-            printf("\n- %s", lineas[numLines]);
-            diaNum = rand() % 5;
+            printf("\n- %s", currentLine);
+            dia = rand() % 5;
 
-            for (int i = 0; i < cantDias; i++)
+            for (int i = 0; i < diasSemana; i++)
             {
-                switch (diaNum)
+                switch (dia)
                 {
                 case 0:
                     printf("Lunes ");
@@ -106,17 +121,22 @@ int main(int argc, char *argv[])
                     fprintf(fileOut, "Viernes ");
                     break;
                 }
-                if (diaNum == 0)
-                    diaNum++;
-                else
-                    diaNum--;
+                if (dia == 0)  dia++;
+                else dia--;
 
                 horaInicio = rand() % 8 + 11;
+                horasDictado = rand() % 4 + 1;
 
-                if ((horaInicio + 4) >= 19)
-                    horaFin = horaInicio - 4;
-                else
-                    horaFin = horaInicio + 4;
+                if ((horaInicio + horasDictado) > 19) horaFin = horaInicio - horasDictado;
+                else horaFin = horaInicio + horasDictado;
+
+                if (horaInicio > horaFin)
+                {
+                    temp = horaInicio;
+                    horaInicio = horaFin;
+                    horaFin = temp;
+                    temp = 0;
+                }
 
                 printf("%d a %d\n", horaInicio, horaFin);
                 fprintf(fileOut, "%d a %d\n", horaInicio, horaFin);
