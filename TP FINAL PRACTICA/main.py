@@ -46,7 +46,6 @@ for lines in frasesFileLines:
         if splitLines[nP] == '_':
             # print(lines[:-1])
             
-            
             try:
                 out = lines[:-1].replace("_",list(enumerate(dict[splitLines[nP-1]].keys()))[0][1])
                 # print(f"{dict[splitLines[nP-1]]}\n")
