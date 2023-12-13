@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
     while (fgets(lineas[numLines], sizeof(lineas[numLines]), materiasFile))
     {
-        *materia[numLines] = *lineas[numLines];
+        strcpy(materia[numLines], lineas[numLines]);
         repetido = 0;
         if (numLines == 0)
             aula = lineas[0];
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
                 len = strlen(materia[numLines]);
 
                 printf(
-                    "[!] La linea '%.*s' se repite en el archivo, solo se tomara una vez.\n",
+                    "\n[!] La linea '%.*s' se repite en el archivo, solo se tomara una vez.\n",
                     len - 1,
                     materia[numLines]);
                 // Imprimo la linea que se repite sacando el \n del final del string
@@ -57,7 +57,8 @@ int main(int argc, char *argv[])
             }
         }
 
-        if (numLines == 0) fprintf(fileOut, "%s", lineas[numLines]);
+        if (numLines == 0)
+            fprintf(fileOut, "%s", lineas[numLines]);
 
         if (repetido == 0 && numLines != 0)
         {
@@ -67,53 +68,51 @@ int main(int argc, char *argv[])
 
             printf("\n- %s", lineas[numLines]);
             diaNum = rand() % 5;
-            
+
             for (int i = 0; i < cantDias; i++)
             {
                 switch (diaNum)
                 {
                 case 0:
                     printf("Lunes ");
-                    fprintf(fileOut,"Lunes ");
+                    fprintf(fileOut, "Lunes ");
                     break;
-                
+
                 case 1:
                     printf("Martes ");
-                    fprintf(fileOut,"Martes ");
+                    fprintf(fileOut, "Martes ");
                     break;
-                
+
                 case 2:
                     printf("Miercoles ");
-                    fprintf(fileOut,"Miercoles ");
+                    fprintf(fileOut, "Miercoles ");
                     break;
-                
+
                 case 3:
                     printf("Jueves ");
-                    fprintf(fileOut,"Jueves ");
+                    fprintf(fileOut, "Jueves ");
                     break;
-                
+
                 case 4:
                     printf("Viernes ");
-                    fprintf(fileOut,"Viernes ");
+                    fprintf(fileOut, "Viernes ");
                     break;
-                
                 }
-                if (diaNum == 0) diaNum++;
-                else diaNum--;
+                if (diaNum == 0)
+                    diaNum++;
+                else
+                    diaNum--;
 
                 horaInicio = rand() % 8 + 11;
 
-                if ((horaInicio + 4) >= 19) horaFin = horaInicio - 4;
-                else horaFin = horaInicio + 4;
+                if ((horaInicio + 4) >= 19)
+                    horaFin = horaInicio - 4;
+                else
+                    horaFin = horaInicio + 4;
 
-                printf("%d a %d\n",horaInicio, horaFin);
-                fprintf(fileOut,"%d a %d\n",horaInicio, horaFin);
-
+                printf("%d a %d\n", horaInicio, horaFin);
+                fprintf(fileOut, "%d a %d\n", horaInicio, horaFin);
             }
-
-            // printf("\n - %d\n",cantDias);
-
-            // printf("[%d]- %s", numLines, lineas[numLines]);
         }
         numLines++;
     }
