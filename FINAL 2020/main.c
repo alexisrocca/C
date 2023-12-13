@@ -1,3 +1,11 @@
+/* 
+
+Falta modularizar el codigo.
+Faltan los asserts
+Falta los comentarios
+
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
