@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     char *aula, *currentLine;
 
     srand(time(0));
-
+    
     while (fgets(fileLine[numLines], sizeof(fileLine[numLines]), materiasFile))
     {
         repetido = 0;
@@ -143,6 +143,7 @@ int main(int argc, char *argv[])
             }
         }
         numLines++;
+        free(currentLine);
     }
 
     printf("\nEl aula es: %s", aula);
